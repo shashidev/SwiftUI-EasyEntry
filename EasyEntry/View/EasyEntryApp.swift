@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct EasyEntryApp: App {
+
+    @State private var isLoggedIn: Bool = false
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if isLoggedIn {
+                DashboardView()
+            }else {
+               ContentView(isLoggedIn: $isLoggedIn)
+            }
         }
     }
 }
