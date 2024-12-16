@@ -9,34 +9,47 @@ import SwiftUI
 
 struct DashboardView: View {
 
-    @StateObject private var viewModel = ProductListViewModel()
+    @ObservedObject private var viewModel = ProductListViewModel()
 
     var body: some View {
+
         VStack {
-            NavigationStack {
-                List {
-                    ForEach(viewModel.productList ?? [], id: \.self) { product in
-                        NavigationLink(value: product) {
-                            Text(product.title ?? "")
+
+            //Show loading
+            if viewModel.isLoading {
+                ProgressView("Loading..")
+                    .progressViewStyle(CircularProgressViewStyle())
+            }else {
+                NavigationStack {
+                    List {
+                        ForEach(viewModel.productList ?? [], id: \.self) { product in
+                            NavigationLink(value: product) {
+                                ProductRow(product: product)
+                                    .padding(.vertical, 10)
+                            }
                         }
                     }
-                }
+                    .listStyle(PlainListStyle())
 
-                .navigationDestination(for: ProductListModel.self) { product in
-                    ItemDetailView(product: product)
-                }
+                    .navigationDestination(for: ProductListModel.self) { product in
+                        ItemDetailView(product: product)
+                    }
 
-                .navigationTitle("Dashboard")
-                .navigationBarTitleDisplayMode(.large)
+                    .navigationTitle("Dashboard")
+                    .navigationBarTitleDisplayMode(.large)
+                }
             }
         }
-
         .onAppear() {
+            //Initiating API call
             viewModel.requestProductList()
         }
     }
 }
 
-#Preview {
-    DashboardView()
+
+struct DashboardView_Preview: PreviewProvider {
+    static var previews: some View {
+        DashboardView()
+    }
 }

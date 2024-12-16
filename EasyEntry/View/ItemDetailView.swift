@@ -13,14 +13,39 @@ struct ItemDetailView: View {
 
     var body: some View {
         VStack {
-            Text("\(product.title ?? "")")
-                .font(.largeTitle)
-            Text("Price: \(String(format: "$%.2f", product.price ?? ""))")
-                .font(.title2)
-                .navigationTitle("\(product.title ?? "")")
+            AsyncImage(url: URL(string: product.image ?? "")) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            } placeholder: {
+                Color.gray
+            }
+            .frame(maxWidth: .infinity, maxHeight: UIScreen.main.bounds.size.width / 1.2)
+            .clipped()
+
+            VStack {
+                Text("\(product.description ?? "")")
+                    .padding()
+                .navigationTitle("Product Details")
                 .navigationBarTitleDisplayMode(.inline)
+            }
+
+            Button("Add to Cart") {
+
+            }
+            .buttonStyle(.borderedProminent)
+
+            Spacer()
         }
     }
 }
 
 
+
+struct ItemDetail_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationStack {
+            ItemDetailView(product: ProductListModel.example)
+        }
+    }
+}
